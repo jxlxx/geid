@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"os"
 	"runtime/debug"
 	"text/template"
@@ -27,6 +28,9 @@ type Epoch struct {
 	Day   int        `yaml:"day"`
 }
 
+//go:embed ids.gotmpl
+var fs embed.FS
+
 func main() {
 	flag.Parse()
 
@@ -46,7 +50,7 @@ func main() {
 		}
 	}
 
-	tmpl, err := template.New("ids.gotmpl").ParseFiles("ids.gotmpl")
+	tmpl, err := template.New("ids.gotmpl").ParseFS(fs, "ids.gotmpl")
 	if err != nil {
 		panic(err)
 	}
