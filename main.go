@@ -60,7 +60,7 @@ var filename string
 var version string
 
 func init() {
-	flag.StringVar(&filename, "config", "c", "input file name")
+	flag.StringVarP(&filename, "config", "c", "", "input file name")
 }
 
 func goInstallVersion() string {
