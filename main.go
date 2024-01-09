@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"runtime/debug"
 	"text/template"
 	"time"
 
@@ -56,7 +57,23 @@ func main() {
 }
 
 var filename string
+var version string
 
 func init() {
 	flag.StringVar(&filename, "config", "c", "input file name")
+}
+
+func goInstallVersion() string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "unknown"
+	}
+	return info.Main.Version
+}
+
+func getVersion() string {
+	if version != "" {
+		return version
+	}
+	return goInstallVersion()
 }
