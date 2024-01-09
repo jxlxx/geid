@@ -1,9 +1,20 @@
 # Good Enough IDs
 
+This is a package that generates short IDs that are "unique" enough to be used instead of UUIDs, which are ugly.
+
+Example: `ab-ce093c1`
+
+## Features
+
+- :sparkles: Optional prefixes: IDs will be of the form `prefix-*`
+- :sparkles: Safe to use with goroutines: New IDs require data from a counter which has a lock
+- :sparkles: Safe to use with multiple machines: Each ID requires a "machine ID" int coming from the environment
+- :sparkles: Optional custom epoch: Can override the default epoch of January 1st, 1970
+
 ## Install
 
 ```sh
-go install github.com/jxlxx/geid
+go install github.com/jxlxx/geid@latest
 ```
 
 ## Configuration
@@ -21,16 +32,18 @@ ids:
     prefix: cat-
   - name: Dog
     prefix: dog-
-  - name: Something # this id will not have a prefix 
+  - name: something # this id will not have a prefix 
 ```
 
-## Generating code
+## Getting Started
+
+Generate code:
 
 ```sh
 geid -c config.yaml > ids.go
 ```
 
-The 
+Generated code:
 
 ```go
 package animals
@@ -105,9 +118,7 @@ func mustGetEnv(key string) string {
 	return v
 }
 ```
-
-
-## Example IDs
+## Examples
 
 ```sh
 cat-ab-ce093c1
@@ -120,3 +131,15 @@ b1-ce093c1
 b2-ce093c1
 b3-ce093c1
 ```
+
+
+## Design
+
+The implementation is loosely based on the following article: [Creating User-Facing, Short Unique IDs: What are the options? - Hwee Lin Yeo, Alexandra](https://medium.com/teamocard/creating-user-facing-short-unique-id-ids-what-are-the-options-464a19283d98)
+
+> Twitter Snowflake, the open-source version of which is unfortunately archived, is an internal service used by Twitter for generating 64-bit unique IDs at a high scale. The IDs are made up of the components:
+> - Epoch timestamp in millisecond precision — 41 bits (gives us 69 years with a custom epoch)
+> - Machine id — 10 bits (thus allowing uniqueness even when we scale the short ID generator service over different nodes)
+> - Sequence number — 12 bits (A local counter per machine that rolls over every 4096)
+> - The extra 1 bit is reserved for future purposes.
+
