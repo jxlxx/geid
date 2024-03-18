@@ -8,11 +8,6 @@ vars:
   VERSION: v0.0.{{ .VERSION_NUMBER }}
 
 tasks:
-  build:
-    description: build a local binary
-    cmds:
-      - go build -o bin/geid -ldflags="-s -w -X github.com/jxlxx/geid.Version={{.VERSION}}"
-
   release:
     cmds:
       - goreleaser release --clean
