@@ -6,28 +6,24 @@ import (
 	"time"
 )
 
-type Prefix interface {
-	Prefix() string
+func New() string {
+	return fmt.Sprintf("%s%s", defaultPrefix, generateCode())
 }
 
-type Generator struct {
-	prefix string
+func NewWithPrefix(p string) string {
+	return fmt.Sprintf("%s%s", p, generateCode())
 }
 
-func New(p Prefix) *Generator {
-	return &Generator{
-		prefix: p.Prefix(),
-	}
-}
-
-func (i Generator) NewID() string {
-	return fmt.Sprintf("%s%s", i.prefix, generateCode())
-}
-
-var machineID = "1"
+var machineID = ""
 
 func SetMachineID(s string) {
 	machineID = s
+}
+
+var defaultPrefix = ""
+
+func SetDefaultPrefix(s string) {
+	defaultPrefix = s
 }
 
 var epoch = time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC).Unix()

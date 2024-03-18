@@ -2,8 +2,6 @@
 
 This is a package that generates short IDs that are "unique" enough to be used instead of UUIDs, which are ugly.
 
-Example: `ab-ce093c1`
-
 ## Features
 
 - :sparkles: Optional prefixes: IDs will be of the form `prefix-*`
@@ -11,15 +9,12 @@ Example: `ab-ce093c1`
 - :sparkles: Safe to use with multiple machines: Can set a unique "Machine ID" for each instance
 - :sparkles: Optional custom epoch: Can override the default epoch of January 1st, 1970
 
-## Install
-
-```sh
-go install github.com/jxlxx/geid@latest
-```
 
 ## Getting Started
 
 Epoch is optional. The default epoch is January 1st, 1970. Setting the epoch to a later date means short IDs.
+
+Setting a default prefix for IDs is optional. Or you can override the default prefix with `NewWithPrefix`.
 
 MachineID is optional. The default machine ID is "1". This is useful if you have many instances of identical
 ID generators running at the same time.
@@ -34,31 +29,35 @@ import (
 	"github.com/jxlxx/geid"
 )
 
-type Cat struct{}
-
-func (c Cat) Prefix() string {
-	return "cat-"
-}
-
 func main() {
-	c := Cat{}
-	g := geid.New(c)
-
 	t := time.Now()
 	geid.SetCustomEpoch(time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), time.UTC))
 
-	for i := 0; i < 100; i++ {
-		fmt.Println(g.NewID())
+	geid.SetDefaultPrefix("cat-")
+
+	geid.SetMachineID("1")
+
+	for i := 0; i < 10; i++ {
+		fmt.Println(geid.New())
 	}
+	fmt.Println(geid.NewWithPrefix("dog-"))
 }
 ```
 
-## Examples
+Output:
 
 ```sh
-cat-ab-ce093c1
-cat-ac-ce093c1
-cat-ad-ce093c1
+cat-ab384031
+cat-ac384031
+cat-ad384031
+cat-ae384031
+cat-af384031
+cat-b0384031
+cat-b1384031
+cat-b2384031
+cat-b3384031
+cat-b4384031
+dog-b5384031
 ```
 
 ## Design
